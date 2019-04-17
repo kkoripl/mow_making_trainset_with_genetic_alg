@@ -1,6 +1,8 @@
 source("readingData.R")
 source("treeClassification.R")
 source('divideForTrainAndTest.R')
+source("calculateGoalFunctionValue.R")
+source("createRpartTree.R")
 
 # Jesli nie masz pakietu rpart.plot to zainstaluj, pozniej wczytaj
 if (!require("rpart.plot")) {
@@ -16,8 +18,14 @@ test = result[[1]]
 train = result[[2]]
 
 # tClass$tree ma informacje o wygenerowanym drzewie, tClass$prediction - predykcje
-# zalozenie braku podzialu na zbior testujacy i uczacy, jakby co to mozna wyjac funkcj? createRpart na zewnatrz
-tClass = treeClassification(dataset[,-ncol(dataset)], dataset$LABELS)
+labelsIdx = ncol(dataset)
+tree = createRpartTree(trainData = train[,-labelsIdx], labels = train$LABELS)
+
+
+prediction = predict(tree, test[,-labelsIdx],type="class")
 
 #Klasyczna macierz pomylek - w wierszach przewidywania, w kolumnach prawda
-tConfusionMatrix = table(dataset$LABELS, tClass$prediction)
+tConfusionMatrix = table(test$LABELS, prediction)
+
+#Wyznaczanie wartosci funkcji celu
+calculateGoalFunctionValue(tConfusionMatrix)
