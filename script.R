@@ -1,5 +1,4 @@
 source("readingData.R")
-source("treeClassification.R")
 source('divideForTrainAndTest.R')
 source("calculateGoalFunctionValue.R")
 source("createRpartTree.R")
