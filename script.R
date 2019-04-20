@@ -1,7 +1,6 @@
 source("readingData.R")
 source('divideForTrainAndTest.R')
-source("calculateGoalFunctionValue.R")
-source("createRpartTree.R")
+source("geneticAlgorithm.R")
 
 # Jesli nie masz pakietu rpart.plot to zainstaluj, pozniej wczytaj
 if (!require("rpart.plot")) {
@@ -16,15 +15,5 @@ result = divideForTrainAndTest(dataset, testPart)
 test = result[[1]]
 train = result[[2]]
 
-# tClass$tree ma informacje o wygenerowanym drzewie, tClass$prediction - predykcje
-labelsIdx = ncol(dataset)
-tree = createRpartTree(trainData = train[,-labelsIdx], labels = train$LABELS)
+findOptimumSubset(train, test, 50, 0.8)
 
-
-prediction = predict(tree, test[,-labelsIdx],type="class")
-
-#Klasyczna macierz pomylek - w wierszach przewidywania, w kolumnach prawda
-tConfusionMatrix = table(test$LABELS, prediction)
-
-#Wyznaczanie wartosci funkcji celu
-calculateGoalFunctionValue(tConfusionMatrix)

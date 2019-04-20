@@ -1,25 +1,59 @@
 source("calculateGoalFunctionValue.R")
+source("createRpartTree.R")
 
-initializeChromosome = function(train, setProb) {
-  trainCnt = nrow(train)
+if (!require("gtools")) {
+  install.packages("gtools")
+}
+library(gtools)
+
+findOptimumSubset = function(train, test, epochs, setProb) {
+  wholeTrainSize = nrow(train)
+  currentPopulation = initializeChromosomes(wholeTrainSize, setProb, 10)
+  allPairs = combinations(10,2)
+  pairsCnt = nrow(allPairs)
+  
+  for (i in 1:epochs) {
+    pairsIdxs = sample(pairsCnt, 5)
+    allOffsprings =matrix(nrow =10 , ncol = wholeTrainSize)
+    for(j in 1:length(pairsIdxs)) {
+      idxsToCross = allPairs[pairsIdxs[j],]
+      offsprings = crossChromosomes(currentPopulation[idxsToCross[1],], currentPopulation[idxsToCross[2],])
+      allOffsprings[(2*j-1),] = offsprings[[1]]
+      allOffsprings[(2*j),] = offsprings[[2]]
+    }
+    print(c("epoch nr", i))
+    print("current Population:")
+    currentRates = valuateChromosomes(currentPopulation, train, test)
+    
+    print(("offsprings"))
+    offspringsRates = valuateChromosomes(allOffsprings, train, test)
+    mergedRates = c(currentRates,offspringsRates)
+    mergedPopulation = rbind(currentPopulation, allOffsprings)
+    print(c("max goal value after current epoch:", max(currentRates)))
+    
+    currentPopulation = mergedPopulation[findNBestIdxs(mergedRates, 10),]
+  }
+  
+}
+
+initializeChromosomes = function(size, setProb, n) {
+  chromosomes =  matrix(nrow = n, ncol = size)
+  for (i in 1:n) {
+    chromosomes[i,]= initializeChromosome(size, setProb)
+  }
+  return(chromosomes)
+}
+
+initializeChromosome = function(size, setProb) {
   
   #tworzy wektor logiczny wypełniony wartoscia FALSE o rozmiarze rownym rozmiarowi zbioru trenujacego
-  chromosome = logical(trainCnt)
+  chromosome = logical(size)
   
   #losowanie indeksów, które mają zostać ustawione na jeden i ustawienie
-  setInidices = sample(trainCnt, round(trainCnt*setProb))
+  setInidices = sample(size, round(size*setProb))
   chromosome[setInidices] =  TRUE
   
   return(chromosome)
-}
-
-initializeChromosomes = function(train, setProb, n) {
-  trainCnt = nrow(train)
-  chromosomes =  matrix(nrow = n, ncol = trainCnt)
-  for (i in 1:n) {
-    chromosomes[i,]= initializeChromosome(train, setProb)
-  }
-  return(chromosomes)
 }
 
 valuateChromosomes = function(chromosomes, train, test){
@@ -40,3 +74,25 @@ valuateChromosome = function(chromosome, train, test) {
   tConfusionMatrix = table(test$LABELS, prediction)
   return(calculateGoalFunctionValue(tConfusionMatrix))
 }
+
+crossChromosomes = function(chromosome1, chromosome2) {
+  size = length(chromosome1)
+  crosscutPoint = round(size/2)
+  offspring1 = c(chromosome1[1:crosscutPoint], chromosome2[(crosscutPoint+1):size])
+  offspring2 = c(chromosome2[1:crosscutPoint], chromosome1[(crosscutPoint+1):size])
+  return(list(offspring1, offspring2))
+}
+
+findNBestIdxs= function(vector, n) {
+  vectorLength = length(vector)
+  lastNotTakenIndex = vectorLength-n
+  edgePoint = sort(vector, partial=lastNotTakenIndex)[lastNotTakenIndex]
+  bestIdxs = which(vector > edgePoint)
+  belowEdgePointCnt = length(bestIdxs)
+  if(belowEdgePointCnt!=n){
+    bestIdxs = c(bestIdxs, rev(which(vector == edgePoint))[1:(n-belowEdgePointCnt)])
+  }
+  return(bestIdxs)
+}
+
+
