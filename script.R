@@ -15,5 +15,5 @@ result = divideForTrainAndTest(dataset, testPart)
 test = result[[1]]
 train = result[[2]]
 
-findOptimumSubset(train, test, 50, 0.8)
+bestSet = findOptimumSubset(train, test, 50, 0.8, 0.1, 3)
 

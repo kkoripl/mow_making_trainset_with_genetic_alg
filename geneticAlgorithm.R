@@ -6,7 +6,9 @@ if (!require("gtools")) {
 }
 library(gtools)
 
-findOptimumSubset = function(train, test, epochs, setProb) {
+findOptimumSubset = function(train, test, epochs, setProb, mutateProb, bitsToMutate) {
+  bestSet = NULL
+  bestValue = 0
   wholeTrainSize = nrow(train)
   currentPopulation = initializeChromosomes(wholeTrainSize, setProb, 10)
   allPairs = combinations(10,2)
@@ -14,13 +16,14 @@ findOptimumSubset = function(train, test, epochs, setProb) {
   
   for (i in 1:epochs) {
     pairsIdxs = sample(pairsCnt, 5)
-    allOffsprings =matrix(nrow =10 , ncol = wholeTrainSize)
+    allOffsprings = matrix(nrow = 10, ncol = wholeTrainSize)
     for(j in 1:length(pairsIdxs)) {
       idxsToCross = allPairs[pairsIdxs[j],]
       offsprings = crossChromosomes(currentPopulation[idxsToCross[1],], currentPopulation[idxsToCross[2],])
       allOffsprings[(2*j-1),] = offsprings[[1]]
       allOffsprings[(2*j),] = offsprings[[2]]
     }
+    allOffsprings = mutateChromosomes(allOffsprings, bitsToMutate, mutateProb)
     print(c("epoch nr", i))
     print("current Population:")
     currentRates = valuateChromosomes(currentPopulation, train, test)
@@ -29,11 +32,18 @@ findOptimumSubset = function(train, test, epochs, setProb) {
     offspringsRates = valuateChromosomes(allOffsprings, train, test)
     mergedRates = c(currentRates,offspringsRates)
     mergedPopulation = rbind(currentPopulation, allOffsprings)
-    print(c("max goal value after current epoch:", max(currentRates)))
-    
+    maxCurrentRate = max(mergedRates)
+    print(c("max goal value in current epoch:", maxCurrentRate))
+    if(bestValue < maxCurrentRate){
+      bestValue = maxCurrentRate
+      bestSet = mergedPopulation[which.max(mergedRates),]
+      print(c("best set changed with val: ", bestValue))
+    }
+    print(c("max goal value after current epoch:", bestValue))
     currentPopulation = mergedPopulation[findNBestIdxs(mergedRates, 10),]
+
   }
-  
+  return(bestSet)
 }
 
 initializeChromosomes = function(size, setProb, n) {
@@ -51,7 +61,7 @@ initializeChromosome = function(size, setProb) {
   
   #losowanie indeksów, które mają zostać ustawione na jeden i ustawienie
   setInidices = sample(size, round(size*setProb))
-  chromosome[setInidices] =  TRUE
+  chromosome[setInidices] = TRUE
   
   return(chromosome)
 }
@@ -94,5 +104,18 @@ findNBestIdxs= function(vector, n) {
   }
   return(bestIdxs)
 }
+
+mutateChromosomes = function(chromosomes, bitsToMutInEach, mutationProb){
+  mutationProb = mutationProb * 100
+  bitsInChromosome = ncol(chromosomes)
+  for(i in 1:nrow(chromosomes)){
+    if(mutationProb <= sample(100, 1)){
+      bitsMutated = sample(bitsInChromosome, bitsToMutInEach)
+      chromosomes[i, bitsMutated] = !chromosomes[i, bitsMutated]
+    }
+  }
+  return(chromosomes)
+}
+
 
 
