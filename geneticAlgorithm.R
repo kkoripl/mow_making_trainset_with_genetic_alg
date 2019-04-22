@@ -1,5 +1,6 @@
 source("calculateGoalFunctionValue.R")
 source("createRpartTree.R")
+source("crossover.R")
 
 if (!require("gtools")) {
   install.packages("gtools")
@@ -15,19 +16,14 @@ findOptimumSubset = function(train, test, epochs, setProb, mutateProb, bitsToMut
   pairsCnt = nrow(allPairs)
   
   for (i in 1:epochs) {
-    pairsIdxs = sample(pairsCnt, 5)
-    allOffsprings = matrix(nrow = 10, ncol = wholeTrainSize)
-    for(j in 1:length(pairsIdxs)) {
-      idxsToCross = allPairs[pairsIdxs[j],]
-      offsprings = crossChromosomes(currentPopulation[idxsToCross[1],], currentPopulation[idxsToCross[2],])
-      allOffsprings[(2*j-1),] = offsprings[[1]]
-      allOffsprings[(2*j),] = offsprings[[2]]
-    }
+    allOffsprings = crossover(parentsTable=currentPopulation, 
+                              pairsCnt=round(nrow(currentPopulation)/2),
+                              crossPointsCnt=10)
     allOffsprings = mutateChromosomes(allOffsprings, bitsToMutate, mutateProb)
+    currentPopulation = mutateChromosomes(currentPopulation, bitsToMutate, mutateProb)
     print(c("epoch nr", i))
     print("current Population:")
     currentRates = valuateChromosomes(currentPopulation, train, test)
-    
     print(("offsprings"))
     offspringsRates = valuateChromosomes(allOffsprings, train, test)
     mergedRates = c(currentRates,offspringsRates)
