@@ -1,12 +1,12 @@
 crossover = function(parentsTable, pairsCnt, crossPointsCnt){
   genotypeBits = ncol(parentsTable);
   parentsCnt = nrow(parentsTable);
-  offsprings = matrix(c(0), nrow = (pairsCnt*2), ncol = genotypeBits);
+  offsprings = matrix(nrow = (pairsCnt*2), ncol = genotypeBits);
   
   #miesza numery wierszy tabelki populacji - rodzicow - i tworzy z nich tablice par
-  pairs = array(c(sample(1:parentsCnt)),c(pairsCnt,2));
+  pairs = combinations(nrow(parentsTable),2);
   
-  for(indP in 1:nrow(pairs)){
+  for(indP in 1:pairsCnt){
     firstOff = (indP)*2 - 1;
     secondOff = (indP)*2;
     
@@ -37,8 +37,6 @@ crossover = function(parentsTable, pairsCnt, crossPointsCnt){
       }
     }
   }
-  
-  #powrot chciany w logical'ach, a jakims cudem offsprings wchodzi jako numeric, mimo iz father i mother sa logicalami
-  #stad takie cos...
-  return(offsprings==1)
+
+  return(offsprings)
 }
