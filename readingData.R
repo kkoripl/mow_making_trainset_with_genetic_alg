@@ -1,6 +1,6 @@
 dataset = read.table("data/spliceDTrainKIS.dat", header=TRUE)
 
-#Wyjasnienie 2 linijek ponizej
+#Wyjasnienie 2 linijek ponize
 #do.call wywoluje funkcje zadana w pierwszym argumencie -> rbind
 #rbind scala wektory [wiersze] w macierz, w tym wypadku sa to wiersze Adata i Ddata poddawane strsplit
 #strsplit dzieli string na czesci: 

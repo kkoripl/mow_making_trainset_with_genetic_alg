@@ -6,6 +6,7 @@ source("geneticAlgorithm.R")
 if (!require("rpart.plot")) {
   install.packages("rpart.plot")
 }
+
 library(rpart)
 library(rpart.plot)
 
@@ -15,5 +16,5 @@ result = divideForTrainAndTest(dataset, testPart)
 test = result[[1]]
 train = result[[2]]
 
-bestSet = findOptimumSubset(train, test, 50, 0.8, 0.1, 3)
+bestSet = findOptimumSubset(train, test, 50, 0.8, 0.1, 3, "_exampleIdx_maxEpochs")
 
