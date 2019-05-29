@@ -1,18 +1,22 @@
 source("calculateGoalFunctionValue.R")
 source("createRpartTree.R")
 source("crossover.R")
+source("graphsSaver.R")
 
 if (!require("gtools")) {
   install.packages("gtools")
 }
 library(gtools)
 
-findOptimumSubset = function(train, test, epochs, setProb, mutateProb, bitsToMutate) {
+findOptimumSubset = function(train, test, epochs, setProb, mutateProb, bitsToMutate, populationSize, plotIdx) {
+  bestValuesInEpochs = c(epochs);
+  posAccInEpochs = c(epochs);
+  negAccInEpochs = c(epochs);
   bestSet = NULL
   bestValue = 0
   wholeTrainSize = nrow(train)
-  currentPopulation = initializeChromosomes(wholeTrainSize, setProb, 10)
-  allPairs = combinations(10,2)
+  currentPopulation = initializeChromosomes(wholeTrainSize, setProb, populationSize)
+  allPairs = combinations(populationSize,2)
   pairsCnt = nrow(allPairs)
   
   for (i in 1:epochs) {
@@ -35,11 +39,18 @@ findOptimumSubset = function(train, test, epochs, setProb, mutateProb, bitsToMut
       bestSet = mergedPopulation[which.max(mergedRates),]
       print(c("best set changed with val: ", bestValue))
     }
+    bestValuesInEpochs[i] = bestValue
+    accuracies = countPosAndNegAccuracies(train[bestSet, ], test)
+    posAccInEpochs[i] = accuracies[[1]]
+    negAccInEpochs[i] = accuracies[[2]]
     print(c("max goal value after current epoch:", bestValue))
-    currentPopulation = mergedPopulation[findNBestIdxs(mergedRates, 10),]
+    currentPopulation = mergedPopulation[findNBestIdxs(mergedRates, populationSize),]
 
   }
-  return(bestSet)
+  saveAccuraciesPlot(posAccInEpochs, negAccInEpochs, epochs, plotIdx, "accuracies_plot_")
+  saveBestEvaluationValuesPlot(bestValuesInEpochs, epochs, plotIdx, "best_evaluations_in_epochs_")
+  saveTrainsetExamplesCounts(train$LABELS, train[bestSet, ]$LABELS, plotIdx, "trainset_examples_counts_")
+  return(list(bestSet,posAccInEpochs,negAccInEpochs,bestValuesInEpochs))
 }
 
 initializeChromosomes = function(size, setProb, n) {
@@ -73,12 +84,15 @@ valuateChromosomes = function(chromosomes, train, test){
 }
 
 valuateChromosome = function(chromosome, train, test) {
-  reducedTrain = train[chromosome,]
-  labelsIdx = ncol(reducedTrain)
-  tree = createRpartTree(trainData = reducedTrain[,-labelsIdx], labels = reducedTrain$LABELS)
-  prediction = predict(tree, test[,-labelsIdx],type="class")
-  tConfusionMatrix = table(test$LABELS, prediction)
+  tConfusionMatrix = buildConfusionMatrix(train[chromosome,], test)
   return(calculateGoalFunctionValue(tConfusionMatrix))
+}
+
+buildConfusionMatrix = function(train, test){
+  labelsIdx = ncol(train)
+  tree = createRpartTree(trainData = train[,-labelsIdx], labels = train$LABELS)
+  prediction = predict(tree, test[,-labelsIdx],type="class")
+  return(table(test$LABELS, prediction))
 }
 
 crossChromosomes = function(chromosome1, chromosome2) {
@@ -113,5 +127,7 @@ mutateChromosomes = function(chromosomes, bitsToMutInEach, mutationProb){
   return(chromosomes)
 }
 
-
-
+countPosAndNegAccuracies = function(train, test){
+  conf = buildConfusionMatrix(train, test)
+  return(list(calculatePositiveAccuracy(conf), calculateNegativeAccuracy(conf)))
+}

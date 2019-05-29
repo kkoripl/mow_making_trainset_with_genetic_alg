@@ -18,6 +18,7 @@ for(i in 1:(ncol(dataset)-1)) {
 
 #ostatnia kolumna na integer
 dataset[,ncol(dataset)] = as.integer(dataset[,ncol(dataset)])
+dataset$LABELS = dataset$LABELS-1
 
 #mieszamy dane
 shuffleIndexes = sample(1:nrow(dataset))
