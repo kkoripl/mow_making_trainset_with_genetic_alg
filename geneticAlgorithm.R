@@ -8,14 +8,14 @@ if (!require("gtools")) {
 }
 library(gtools)
 
-findOptimumSubset = function(train, test, epochs, setProb, mutateProb, bitsToMutate, populationSize, plotIdx) {
+findOptimumSubset = function(train, test, epochs, setProb, mutateProb, bitsToMutate, populationSize, equalExamplesCount, plotIdx) {
   bestValuesInEpochs = c(epochs);
   posAccInEpochs = c(epochs);
   negAccInEpochs = c(epochs);
   bestSet = NULL
   bestValue = 0
   wholeTrainSize = nrow(train)
-  currentPopulation = initializeChromosomes(wholeTrainSize, setProb, populationSize)
+  currentPopulation = initializeChromosomes(wholeTrainSize, setProb, populationSize, equalExamplesCount, train$LABELS)
   allPairs = combinations(populationSize,2)
   pairsCnt = nrow(allPairs)
   
@@ -53,10 +53,10 @@ findOptimumSubset = function(train, test, epochs, setProb, mutateProb, bitsToMut
   return(list(bestSet,posAccInEpochs,negAccInEpochs,bestValuesInEpochs))
 }
 
-initializeChromosomes = function(size, setProb, n) {
+initializeChromosomes = function(size, setProb, n, equalExamplesCount=FALSE, labels=NULL) {
   chromosomes =  matrix(nrow = n, ncol = size)
   for (i in 1:n) {
-    chromosomes[i,]= initializeChromosome(size, setProb)
+    chromosomes[i,]= initializeChromosome(size, setProb, equalExamplesCount, labels)
   }
   return(chromosomes)
 }
@@ -68,6 +68,32 @@ initializeChromosome = function(size, setProb) {
   
   #losowanie indeksów, które mają zostać ustawione na jeden i ustawienie
   setInidices = sample(size, round(size*setProb))
+  chromosome[setInidices] = TRUE
+  
+  return(chromosome)
+}
+
+initializeChromosome = function(size, setProb, equalExamplesCount=FALSE, labels=NULL) {
+  
+  chromosome = logical(size)
+  #tworzy wektor logiczny wypełniony wartoscia FALSE o rozmiarze rownym rozmiarowi zbioru trenujacego
+  if(equalExamplesCount) {
+    positiveIndices= which(labels==1)
+    negativeIndices= which(labels==0)
+    
+    positiveSize = length(positiveIndices)
+    negativeSize = length(negativeIndices)
+    
+    negativeSetIndicesSubindices = sample(negativeSize, round(negativeSize*setProb*positiveSize/negativeSize))
+    positiveSetIndicesSubindices = sample(positiveSize, round(positiveSize*setProb))
+    
+    setInidices = c(positiveIndices[positiveSetIndicesSubindices], negativeIndices[negativeSetIndicesSubindices])
+    
+  } else {
+    #losowanie indeksów, które mają zostać ustawione na jeden i ustawienie
+    setInidices = sample(size, round(size*setProb))
+  }
+
   chromosome[setInidices] = TRUE
   
   return(chromosome)

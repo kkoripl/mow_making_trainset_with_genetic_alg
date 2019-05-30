@@ -1,8 +1,9 @@
-epochs = 3
+epochs = 10
 setProb = 0.8 
 mutateProb = 0.1  
 bitsToMutate = 3 
 populationSize = 10
+equalExamplesCount = FALSE
 
 
 testParticularParamInfluence = function(train, test, paramValues, paramName){
@@ -24,11 +25,16 @@ testParticularParamInfluence = function(train, test, paramValues, paramName){
              populationSize = paramValues[i]
              print(c(" ===============> Start testing population size:", populationSize))   
            },
+           'Equal_examples_count'={
+             equalExamplesCount = paramValues[i]
+             print(c(" ===============> Start testing equal examples count", equalExamplesCount))   
+           },
            {
              print('Testing nothing')
            }
     )
-    bestSetData = findOptimumSubset(train, test, epochs, setProb, mutateProb,  bitsToMutate, populationSize, plotIdx=paste(paramName,"_",as.character(paramValues[i])))
+    bestSetData = findOptimumSubset(train, test, epochs, setProb, mutateProb,  bitsToMutate, populationSize, equalExamplesCount, 
+                                    plotIdx=paste(paramName,"_",as.character(paramValues[i])))
     posAccuracies[i,] = bestSetData[[2]]
     negAccuracies[i,] = bestSetData[[3]]
     bestValuesInEpochs[i,] = bestSetData[[4]]
@@ -45,7 +51,8 @@ testEpochsInfluence = function(train, test, epochsParams){
   for(i in 1:length(epochsParams)){
     epochs = epochsParams[i]
     print(c(" ===============> Start testing epochs:", as.character(epochs)))
-    bestSetData = findOptimumSubset(train, test, epochs, setProb, mutateProb, bitsToMutate, populationSize, plotIdx=paste('epochs',"_",as.character(epochs)))
+    bestSetData = findOptimumSubset(train, test, epochs, setProb, mutateProb, bitsToMutate, populationSize, equalExamplesCount, 
+                                    plotIdx=paste('epochs',"_",as.character(epochs)))
   }
 }
 

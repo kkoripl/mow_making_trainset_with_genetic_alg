@@ -1,4 +1,4 @@
-dataset = read.table("data/spliceDTrainKIS.dat", header=TRUE)
+dataset = read.table("data/spliceATrainKIS.dat", header=TRUE)
 
 #Wyjasnienie 2 linijek ponize
 #do.call wywoluje funkcje zadana w pierwszym argumencie -> rbind
