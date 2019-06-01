@@ -1,6 +1,17 @@
 directory = "./graph/"
 imgType = ".png"
 
+
+#' Funkcja zapisujaca wykres porownujacy najlepszy wybrany zbior uczacy ze zbiorem uczacym ze wszystkich dostepnych danych
+#'
+#' @param bestValues Funkcje przystosowania dla najlepszego znalezionego zbioru
+#' @param wholeTrainGoalFuncValue Funkcje przystosowania dla maksymalnego zbioru
+#' @param epochs Liczba epok uczenia
+#' @param plotIdx Oznaczenie dla nazwy wykresu, by znalezc konkretny wykres przy wielu takich samych w katalogu
+#' @param plotName Nazwa wykresu
+#'
+#' @return Wykres porownawczy najlepszyego wybranego zbioru uczacego ze zbiorem uczacym ze wszystkich dostepnych danych
+#' @export
 saveBestEvaluationValuesPlot = function(bestValues, wholeTrainGoalFuncValue, epochs, plotIdx, plotName = NULL){
   png(returnPlotnameInPath(name = plotName, defaultPlotName = "best_evaluations_in_epochs_plot", idx = plotIdx))
   matplot(seq(1, epochs, 1), cbind(bestValues, rep(wholeTrainGoalFuncValue, epochs)),
@@ -13,6 +24,16 @@ saveBestEvaluationValuesPlot = function(bestValues, wholeTrainGoalFuncValue, epo
   dev.off()
 }
 
+
+#' Tworzenie wykresu pokazujacego ile przykladow danej klasy znajduje sie w poczatkowym zbiorze uczacym, a ile w znalezionym na koniec
+#'
+#' @param startLabels Etykiety klas z poczatkowego zbioru uczacego
+#' @param endLabels Etykiety klas z koncowego zbioru uczacego
+#' @param plotIdx Oznaczenie dla nazwy wykresu, by znalezc konkretny wykres przy wielu takich samych w katalogu
+#' @param plotName Nazwa wykresu
+#'
+#' @return Wykres liczebnosci klas w poczatkowym i koncowym zbiorze uczacym
+#' @export
 saveTrainsetExamplesCounts = function(startLabels, endLabels, plotIdx, plotName = NULL){
   startCounts = table(startLabels)
   counts = matrix(c(startCounts, table(endLabels)), nrow=2)
@@ -29,6 +50,17 @@ saveTrainsetExamplesCounts = function(startLabels, endLabels, plotIdx, plotName 
   dev.off()
 }
 
+
+#' Tworzenie wykresu dokladnosci obu klas dla danego zbioru uczacego
+#'
+#' @param positiveAcc Wektor dokladnosci klasy '1'
+#' @param negativeAcc Wektor dokladnosci klasy '0'
+#' @param epochs Liczba epok nauki
+#' @param plotIdx Oznaczenie dla nazwy wykresu, by znalezc konkretny wykres przy wielu takich samych w katalogu
+#' @param plotName Nazwa wykresu
+#'
+#' @return Wykres dokladnosci wyznaczania obu klas dla danego zbioru uczacego na przestrzeni epok
+#' @export
 saveAccuraciesPlot = function(positiveAcc, negativeAcc, epochs, plotIdx, plotName = NULL){
   png(returnPlotnameInPath(name = plotName, defaultPlotName = "accuracies_in_epochs_plot", idx = plotIdx))
   matplot(seq(1, epochs, 1), cbind(positiveAcc, negativeAcc),
@@ -41,6 +73,18 @@ saveAccuraciesPlot = function(positiveAcc, negativeAcc, epochs, plotIdx, plotNam
   dev.off()
 }
 
+
+#' Tworzenie zbiorczych wykresow zaleznosci miedzy funkcja, a wplywem na nia danego parametru i jego wartosci
+#'
+#' @param values Wartosci funkcji na ktora wplyw ma miec badany parametr w epokach uczenia
+#' @param paramValues Wartosci badanego parametru
+#' @param epochs Liczba epok uczenia
+#' @param plotTitle Tytul wykresu
+#' @param plotIdx Oznaczenie wykresu nazwa badanego parametru
+#' @param plotName Nazwa pliku wykresu
+#'
+#' @return Zbiorczy wykres zaleznosci funkcji od wplywu badanych wartosci parametru
+#' @export
 saveParticularParamTestsValueInEpoch = function(values, paramValues, epochs, plotTitle, plotIdx, plotName = NULL){
   png(returnPlotnameInPath(name = plotName, defaultPlotName = "particular_param_tests", idx = plotIdx))
   matplot(seq(1, epochs, 1), t(values),
@@ -53,6 +97,15 @@ saveParticularParamTestsValueInEpoch = function(values, paramValues, epochs, plo
   dev.off()
 }
 
+
+#' Zwracanie sciezki do zapisywanego wykresu
+#'
+#' @param name Nazwa wykresu
+#' @param defaultPlotName Domyslna nazwa
+#' @param idx Oznaczenie wykresu, dla rozroznienia go wsrod podobnych
+#'
+#' @return Sciezka do nowotworzonego wykresu
+#' @export
 returnPlotnameInPath = function(name, defaultPlotName, idx){
   if(is.null(name)) name = paste(directory, defaultPlotName, idx, imgType)
   else name = paste(directory, name, idx, imgType)

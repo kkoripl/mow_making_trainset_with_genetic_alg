@@ -3,7 +3,6 @@ source('divideForTrainAndTest.R')
 source("geneticAlgorithm.R")
 source("testParticularParameter.R")
 
-# Jesli nie masz pakietu rpart.plot to zainstaluj, pozniej wczytaj
 if (!require("rpart.plot")) {
   install.packages("rpart.plot")
 }
@@ -11,8 +10,10 @@ if (!require("rpart.plot")) {
 library(rpart)
 library(rpart.plot)
 
-#zapewnienie powtarzalnosci wynik?w
+#zapewnienie powtarzalnosci wynikow
 set.seed(10)
+
+dataset = readData('spliceDTrainKIS.dat')
 
 #podzial na czesc uczaca i testowa
 testPart = 0.2
@@ -27,7 +28,7 @@ print(c("Goal func value with whole train set: ", wholeTrainGoalFuncValue))
 
 testParticularParamInfluence(train, test, c(3,5,10,15), 'Population_size')
 testParticularParamInfluence(train, test, c(TRUE, FALSE), 'Equal_examples_count')
-testParticularParamInfluence(train, test, c(0.6,0,7,0.8,0,9), 'Start_bits_set')
+testParticularParamInfluence(train, test, c(0.6,0.7,0.8,0.9), 'Start_bits_set')
 
 
 

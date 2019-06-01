@@ -1,3 +1,11 @@
+#' Funkcja tworząca drzewo Rpart na podstawie danych
+#'
+#' @param trainData Dane do budowy drzewa decyzyjnego
+#' @param labels Etykiety danych
+#' @param plot Informacja czy wyświetlić zbudowane drzewo
+#'
+#' @return Zbudowane drzewo Rpart
+#' @export
 createRpartTree = function(trainData, labels, plot = FALSE) {
   
   # Zrob drzewo, wpierw to co chcemy uzyskac, pozniej dane, na koncu sposob
