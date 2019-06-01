@@ -1,4 +1,4 @@
-epochs = 10
+epochs = 20
 setProb = 0.8 
 mutateProb = 0.1  
 bitsToMutate = 3 
@@ -61,9 +61,8 @@ testEpochsInfluence = function(train, test, epochsParams){
 plotPosAccuracyPlot = function(posAccuracies, paramValues, paramName, epochs){
   saveParticularParamTestsValueInEpoch(posAccuracies, 
                                        paramValues,
-                                       'Positive Accuracy',
                                        epochs, 
-                                       paste('Positive Accuracies in Epochs by',paramName), 
+                                       paste('Dokladnosc dla pozytywnych'), 
                                        plotIdx = '', 
                                        plotName = paste('T_Positive_Accuracies_in_Epochs_by_',paramName))
 }
@@ -72,9 +71,8 @@ plotPosAccuracyPlot = function(posAccuracies, paramValues, paramName, epochs){
 plotNegAccuracyPlot = function(negAccuracies, paramValues, paramName, epochs){
   saveParticularParamTestsValueInEpoch(negAccuracies, 
                                        paramValues,
-                                       'Negative Accuracy',
                                        epochs, 
-                                       paste('Negative Accuracies in Epochs by',paramName), 
+                                       paste('Dokladnosc dla negatywnych'), 
                                        plotIdx = '', 
                                        plotName = paste('T_Negative_Accuracies_in_Epochs_by_',paramName))
 }
@@ -83,9 +81,8 @@ plotNegAccuracyPlot = function(negAccuracies, paramValues, paramName, epochs){
 plotBestValuesPlot = function(bestValuesInEpochs, paramValues, paramName, epochs){
   saveParticularParamTestsValueInEpoch(bestValuesInEpochs, 
                                        paramValues,
-                                       'Best Evaluation Values',
                                        epochs, 
-                                       paste('Best evaluation values in Epochs by',paramName), 
+                                       paste('Najlepsza wartosc funkcji kosztu'), 
                                        plotIdx = '', 
                                        plotName = paste('T_Best_eval_values_in_Epochs_by_',paramName))
 } 

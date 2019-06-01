@@ -47,8 +47,11 @@ findOptimumSubset = function(train, test, epochs, setProb, mutateProb, bitsToMut
     currentPopulation = mergedPopulation[findNBestIdxs(mergedRates, populationSize),]
 
   }
+  allSetChromosome = !logical(nrow(train))
+  wholeTrainGoalFuncValue = valuateChromosome(allSetChromosome, train, test)
+  
   saveAccuraciesPlot(posAccInEpochs, negAccInEpochs, epochs, plotIdx, "accuracies_plot_")
-  saveBestEvaluationValuesPlot(bestValuesInEpochs, epochs, plotIdx, "best_evaluations_in_epochs_")
+  saveBestEvaluationValuesPlot(bestValuesInEpochs, wholeTrainGoalFuncValue,epochs, plotIdx, "best_evaluations_in_epochs_")
   saveTrainsetExamplesCounts(train$LABELS, train[bestSet, ]$LABELS, plotIdx, "trainset_examples_counts_")
   return(list(bestSet,posAccInEpochs,negAccInEpochs,bestValuesInEpochs))
 }
