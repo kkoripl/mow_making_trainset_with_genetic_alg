@@ -1,3 +1,5 @@
+#Autorzy - Konrad Frąc i Łukasz Kotlewski
+
 directory = "./graph/"
 imgType = ".png"
 

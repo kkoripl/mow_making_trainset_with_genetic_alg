@@ -1,3 +1,5 @@
+#Autorzy - Konrad Frąc i Łukasz Kotlewski
+
 source("readingData.R")
 source('divideForTrainAndTest.R')
 source("geneticAlgorithm.R")

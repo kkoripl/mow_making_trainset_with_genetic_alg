@@ -1,3 +1,5 @@
+#Autorzy - Konrad Frąc i Łukasz Kotlewski
+
 #' Wyliczanie funkcji dopasowania na podstawie Macierzy pomyłek
 #'
 #' @param binaryConfusionMatrix Otrzymana macierz pomyłek dla danego chromosomu

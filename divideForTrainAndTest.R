@@ -1,3 +1,5 @@
+#Autorzy - Konrad Frąc i Łukasz Kotlewski
+
 #' Podział na dane testujace i trenujace
 #'
 #' @param set Zbior danych do podzialu

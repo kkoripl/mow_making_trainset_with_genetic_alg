@@ -1,3 +1,5 @@
+#Autorzy - Konrad Frąc i Łukasz Kotlewski
+
 #' Funkcja wczytujaca zbior danych z podanego pliku
 #'
 #' @param dataFile Nazwa pliku z danymi z folderu "data"

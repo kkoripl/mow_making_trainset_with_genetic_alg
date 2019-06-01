@@ -1,3 +1,5 @@
+#Autorzy - Konrad Frąc i Łukasz Kotlewski
+
 #Domyslne ustawienia do testowania algorytmu genetycznego
 epochs = 20
 setProb = 0.8 

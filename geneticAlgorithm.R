@@ -1,3 +1,5 @@
+#Autorzy - Konrad Frąc i Łukasz Kotlewski
+
 source("calculateGoalFunctionValue.R")
 source("createRpartTree.R")
 source("crossover.R")

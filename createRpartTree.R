@@ -1,3 +1,5 @@
+#Autorzy - Konrad Frąc i Łukasz Kotlewski
+
 #' Funkcja tworząca drzewo Rpart na podstawie danych
 #'
 #' @param trainData Dane do budowy drzewa decyzyjnego

@@ -1,3 +1,5 @@
+#Autorzy - Konrad Frąc i Łukasz Kotlewski
+
 #' Funkcja tworząca potomków danego pokolenia - krzyzowanie
 #'
 #' @param parentsTable Macierz rodziców - aktualnego pokolenia
