@@ -26,9 +26,9 @@ allSetChromosome = !logical(nrow(train))
 wholeTrainGoalFuncValue = valuateChromosome(allSetChromosome, train, test)
 print(c("Goal func value with whole train set: ", wholeTrainGoalFuncValue))
 
-testParticularParamInfluence(train, test, c(3,5,10,15), 'Population_size')
+testParticularParamInfluence(train, test, c(8,10,15,18), 'Population_size')
 testParticularParamInfluence(train, test, c(TRUE, FALSE), 'Equal_examples_count')
-testParticularParamInfluence(train, test, c(0.6,0.7,0.8,0.9), 'Start_bits_set')
+testParticularParamInfluence(train, test, c(0.6,0,7,0.8,0.9), 'Start_bits_set')
 
 
 

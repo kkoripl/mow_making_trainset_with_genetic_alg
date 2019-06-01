@@ -135,7 +135,7 @@ plotBestValuesPlot = function(bestValuesInEpochs, paramValues, paramName, epochs
   saveParticularParamTestsValueInEpoch(bestValuesInEpochs, 
                                        paramValues,
                                        epochs, 
-                                       paste('Najlepsza wartosc funkcji kosztu'), 
+                                       paste('Najlepsza wartosc funkcji oceny'), 
                                        plotIdx = '', 
                                        plotName = paste('T_Best_eval_values_in_Epochs_by_',paramName))
 } 

@@ -15,7 +15,7 @@ imgType = ".png"
 saveBestEvaluationValuesPlot = function(bestValues, wholeTrainGoalFuncValue, epochs, plotIdx, plotName = NULL){
   png(returnPlotnameInPath(name = plotName, defaultPlotName = "best_evaluations_in_epochs_plot", idx = plotIdx))
   matplot(seq(1, epochs, 1), cbind(bestValues, rep(wholeTrainGoalFuncValue, epochs)),
-       main = "Najlepsza wartosci funkcji kosztu",
+       main = "Najlepsza wartosci funkcji oceny",
        xlab = "Epoka",
        ylab = "Wartosc",
        type = "b",
